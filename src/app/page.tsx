@@ -27,9 +27,13 @@ export default function LandingPage() {
 
         {/* Contenedor para centrar el texto */}
         <div className="flex-1 flex justify-center">
-          <Link href="/colaborators">
-            <p className="text-sm text-gray-600">De la comunidad para ti ❤️</p>
-          </Link>
+          <p className="text-sm text-gray-600">
+            De la
+            <Link
+              className="text-purple-500 hover:underline underline-offset-4 transition-colors"
+            href="/colaborators"> comunidad </Link>
+            para ti ❤️
+          </p>
         </div>
 
         <nav className="ml-auto flex gap-4 sm:gap-6">
