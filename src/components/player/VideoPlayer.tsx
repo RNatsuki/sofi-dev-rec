@@ -31,12 +31,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [controlsTimeout, setControlsTimeout] = useState<any>(null);
+  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragProgress, setDragProgress] = useState<number | null>(0);
   // Añadido para controlar si el video ha comenzado
-  const [hasStarted, setHasStarted] = useState(false);
+  // Removed unused state variable
 
   useEffect(() => {
     const video = videoRef.current;
@@ -55,7 +55,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
     video.addEventListener("timeupdate", updateProgress);
     video.addEventListener("loadedmetadata", updateDuration);
-    video.addEventListener("playing", () => setHasStarted(true)); // Marca que el video ha comenzado
+    // Removed unused event listener
 
     const savedTime = localStorage.getItem("videoPlayerCurrentTime");
     if (savedTime) {
@@ -65,7 +65,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     return () => {
       video.removeEventListener("timeupdate", updateProgress);
       video.removeEventListener("loadedmetadata", updateDuration);
-      video.removeEventListener("playing", () => setHasStarted(true)); // Limpiar el evento al desmontar
+      // Removed unused event listener cleanup
     };
   }, []);
 
@@ -75,8 +75,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   useEffect(() => {
     const handleFullScreenChange = () => {
-      const fullScreenElement =
-        document.fullscreenElement || (document as any).webkitFullscreenElement; // Safari
+
+      const fullScreenElement = document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement; // Safari
       setIsFullScreen(fullScreenElement === videoRef.current);
       setControlsVisible(fullScreenElement === videoRef.current);
     };
@@ -217,23 +217,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     if (!document.fullscreenElement && videoContainer) {
       if (videoContainer.requestFullscreen) {
         videoContainer.requestFullscreen();
-      } else if (videoContainer.mozRequestFullScreen) {
-        videoContainer.mozRequestFullScreen();
-      } else if (videoContainer.webkitRequestFullscreen) {
-        videoContainer.webkitRequestFullscreen();
-      } else if (videoContainer.msRequestFullscreen) {
-        videoContainer.msRequestFullscreen();
       }
       setIsFullScreen(true);
     } else {
       if (document.exitFullscreen) {
         document.exitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if (document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      } else if (document.msExitFullscreen) {
-        document.msExitFullscreen();
       }
       setIsFullScreen(false);
     }
