@@ -12,6 +12,9 @@
   margin: 0 10px;
 }
 
+.progress-bar:hover{
+  height: 15px;
+}
 .progress {
   height: 100%;
   background-color: red;

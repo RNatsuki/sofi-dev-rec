@@ -168,12 +168,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   };
 
   const handleDrag = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!isDragging || !videoRef.current || !progressBarRef.current) return;
-  const clickPosition = e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
-  const newTime = clickPosition * videoRef.current.duration;
-
-  // Actualiza el progreso visual sin modificar el video
-  setDragProgress(newTime);
+    if (!isDragging || !progressBarRef.current) return;
+    const clickPosition =
+      e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
+    setDragProgress(clickPosition * 100);
   };
 
   const showControls = () => {
@@ -313,28 +311,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
             onMouseUp={handleDragEnd}
             onMouseMove={handleDrag}
           >
-            <div
-              className="progress"
-              style={{
-                width: `${
-                  dragProgress !== null
-                    ? (dragProgress / duration) * 100
-                    : progress
-                }%`,
-              }}
-            >
+            <div className="progress" style={{ width: `${progress}%` }}>
               <div
                 className="time-tooltip"
-                style={{
-                  transform: `translateX(-50%)`,
-                  left: `${
-                    dragProgress !== null
-                      ? (dragProgress / duration) * 100
-                      : progress
-                  }%`,
-                }}
+                style={{ transform: `translateX(-50%)`, left: `${progress}%` }}
               >
-                {formatTime(dragProgress !== null ? dragProgress : currentTime)}
+                {formatTime(currentTime)}
               </div>
             </div>
           </div>
