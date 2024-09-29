@@ -1,7 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import Image from "next/image";
+import { Card } from "@/components/ui/Card";
 import { useState } from "react";
 import VideoPlayer from "@/components/player/VideoPlayer";
 
@@ -37,7 +36,7 @@ export default function VideoSection() {
   const getThumbnailSrc = (id: string) => {
     // Retornar la ruta de la miniatura según el ID
     return `/assets/thumbnails/${id}.png`;
-  }
+  };
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 bg-gray-50">
@@ -48,24 +47,12 @@ export default function VideoSection() {
         <div className="grid gap-6 lg:grid-cols-2">
           {videos.map((video) => (
             <Card
-              onClick={() => openVideoModal(video.id)} // Pasar el ID del video al abrir el modal
+              title={video.title}
+              click={() => openVideoModal(video.id)}
               key={video.id}
-              className="hover:shadow-xl transition-shadow duration-300 rounded-lg border border-gray-200"
-            >
-              <Image
-                src={getThumbnailSrc(video.id)} // Usar el ID del video para construir la ruta de la miniatura
-                alt={video.title}
-                className="w-full h-48 object-cover rounded-t-lg"
-                width={400}
-                height={200}
-              />
-              <CardHeader>
-                <CardTitle className="text-gray-800">{video.title}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">{video.description}</p>
-              </CardContent>
-            </Card>
+              info={video.description}
+              imgRoute="vid-1.webp"
+            />
           ))}
         </div>
       </div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import AvatarAlternative from "@/images/Avatar-Alternative.png";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 export default function LandingPage() {
   const { push } = useRouter();
@@ -31,7 +31,11 @@ export default function LandingPage() {
             De la
             <Link
               className="text-purple-500 hover:underline underline-offset-4 transition-colors"
-            href="/colaborators"> comunidad </Link>
+              href="/colaborators"
+            >
+              {" "}
+              comunidad{" "}
+            </Link>
             para ti ❤️
           </p>
         </div>
@@ -98,18 +102,17 @@ export default function LandingPage() {
             <div className="grid gap-8 lg:grid-cols-3">
               {["100% Gratuito", "Videos Prácticos", "Comunidad Activa"].map(
                 (title, i) => (
-                  <Card key={i}>
-                    <CardHeader>
-                      <CardTitle>{title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {i === 0
+                  <Card
+                    key={i + title}
+                    title={title}
+                    info={
+                      i === 0
                         ? "Accede a todo el contenido sin costo alguno. ¡Aprende a tu propio ritmo!"
                         : i === 1
                         ? "Aprende con tutoriales paso a paso y ejemplos del mundo real."
-                        : "Únete a otros estudiantes en nuestra comunidad para compartir y aprender juntos."}
-                    </CardContent>
-                  </Card>
+                        : "Únete a otros estudiantes en nuestra comunidad para compartir y aprender juntos."
+                    }
+                  />
                 )
               )}
             </div>
