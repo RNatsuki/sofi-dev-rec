@@ -33,7 +33,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const [controlsVisible, setControlsVisible] = useState(true);
   const [controlsTimeout, setControlsTimeout] = useState<any>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
-
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragProgress, setDragProgress] = useState<number | null>(0);
   // Añadido para controlar si el video ha comenzado
   const [hasStarted, setHasStarted] = useState(false);
 
@@ -151,6 +152,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
       e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
     const newTime = clickPosition * videoRef.current.duration;
     seek(newTime);
+  };
+
+  const handleDragStart = () => {
+    setIsDragging(true);
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    if (videoRef.current && dragProgress) {
+      videoRef.current.currentTime =
+        (dragProgress / 100) * videoRef.current.duration;
+    }
+    setDragProgress(null);
+  };
+
+  const handleDrag = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging || !videoRef.current || !progressBarRef.current) return;
+  const clickPosition = e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
+  const newTime = clickPosition * videoRef.current.duration;
+
+  // Actualiza el progreso visual sin modificar el video
+  setDragProgress(newTime);
   };
 
   const showControls = () => {
@@ -286,13 +309,32 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
             ref={progressBarRef}
             className="progress-bar"
             onClick={handleProgressBarClick}
+            onMouseDown={handleDragStart}
+            onMouseUp={handleDragEnd}
+            onMouseMove={handleDrag}
           >
-            <div className="progress" style={{ width: `${progress}%` }}>
+            <div
+              className="progress"
+              style={{
+                width: `${
+                  dragProgress !== null
+                    ? (dragProgress / duration) * 100
+                    : progress
+                }%`,
+              }}
+            >
               <div
                 className="time-tooltip"
-                style={{ transform: `translateX(-50%)`, left: `${progress}%` }}
+                style={{
+                  transform: `translateX(-50%)`,
+                  left: `${
+                    dragProgress !== null
+                      ? (dragProgress / duration) * 100
+                      : progress
+                  }%`,
+                }}
               >
-                {formatTime(currentTime)}
+                {formatTime(dragProgress !== null ? dragProgress : currentTime)}
               </div>
             </div>
           </div>
