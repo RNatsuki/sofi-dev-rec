@@ -220,7 +220,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   return (
     <div
-      className="video-container"
+      className="relative w-full max-w-[800px] mx-auto bg-black overflow-hidden"
       onMouseMove={showControls}
       onMouseLeave={hideControls}
     >
@@ -229,14 +229,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
         <img
           src={thumbnail}
           alt="Thumbnail"
-          className="video-thumbnail"
+          className="absolute top-0 left-0 w-full h-full object-cover cursor-pointer"
           onClick={togglePlayPause} // Play video when thumbnail is clicked
         />
       )}
       <video
         ref={videoRef}
         src={src}
-        className="video-element"
+        className="video w-full h-auto block m-auto"
         controls={false}
         onMouseOver={showControls}
         onMouseOut={hideControls}
@@ -245,17 +245,32 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
         onPause={() => setIsPlaying(false)}
       />
       {controlsVisible && (
-        <div className="video-controls">
-          <button onClick={handleRewind}>
+        <div
+          className="video-controls absolute bottom-0 left-0 right-0 flex justify-between items-center p-2.5 bg-[rgba(0,0,0,0)] text-white transition-colors ease-in-out hover:bg-[rgba(0,0,0,0.5)]
+        "
+        >
+          <button
+            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
+            onClick={handleRewind}
+          >
             <FontAwesomeIcon icon={faBackward} />
           </button>
-          <button onClick={togglePlayPause}>
+          <button
+            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
+            onClick={togglePlayPause}
+          >
             <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
           </button>
-          <button onClick={handleForward}>
+          <button
+            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
+            onClick={handleForward}
+          >
             <FontAwesomeIcon icon={faForward} />
           </button>
-          <button onClick={toggleMute}>
+          <button
+            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
+            onClick={toggleMute}
+          >
             <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} />
           </button>
           <input
@@ -281,8 +296,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
               </div>
             </div>
           </div>
-          <span className="current-time">{formatTime(currentTime)}</span>
-          <span className="duration-time">{formatTime(duration)}</span>
+          <div
+            className="time-display flex items-center space-x-2"
+            style={{ width: "100px" }}
+          >
+            <span className="current-time">{formatTime(currentTime)}</span>
+            <span className="duration-time">{formatTime(duration)}</span>
+          </div>
           <button onClick={toggleFullScreen}>
             <FontAwesomeIcon icon={isFullScreen ? faCompress : faExpand} />
           </button>
