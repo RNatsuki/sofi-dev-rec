@@ -1,15 +1,28 @@
 "use client";
 
 import { Format } from "@/components/Format";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import front from "@/json/videos/frontend.json";
-import { Player } from "@/components/Player";
+import Player from "@/components/player-cdn/VideoPlayer";
 
 export default function Home() {
   const [modalVid, setModalVid] = useState<boolean>(false);
   const [idVid, setIdVid] = useState<string>("");
 
   const ImagesURL = "https://i.ytimg.com/vi/";
+
+  // Función para cerrar el modal
+  const closeModal = () => {
+    setModalVid(false);
+    setIdVid("");
+  };
+
+  // Función para manejar el cierre al hacer clic fuera del modal
+  const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      closeModal(); // Cerrar el modal si se hace clic en el fondo
+    }
+  };
 
   return (
     <Format>
@@ -35,7 +48,18 @@ export default function Home() {
           </article>
         ))}
       </section>
-      {modalVid ? <Player id={idVid} element={setModalVid} /> : null}
+
+      {/* Modal */}
+      {modalVid && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          onClick={handleModalClick}
+        >
+          <div className="relative w-full max-w-3xl p-4 bg-transparent rounded-lg">
+            <Player src={idVid} />
+          </div>
+        </div>
+      )}
     </Format>
   );
 }
