@@ -13,11 +13,11 @@ import {
   faCompress,
   faCog,
 } from "@fortawesome/free-solid-svg-icons";
-import "./VideoPlayer.css"; // Asegúrate de tener este archivo CSS para estilos
+import "./VideoPlayer.css";
 
 interface VideoPlayerProps {
   src: string;
-  thumbnail?: string; // Agregar propiedad thumbnail
+  thumbnail?: string;
   width?: number;
   height?: number;
 }
@@ -32,14 +32,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragProgress, setDragProgress] = useState<number | null>(0);
   const [playbackRate, setPlaybackRate] = useState(1);
-  const [showSpeedSelector, setShowSpeedSelector] = useState(false); // Estado para mostrar el selector de velocidad
+  const [showSpeedSelector, setShowSpeedSelector] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -58,7 +56,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
     video.addEventListener("timeupdate", updateProgress);
     video.addEventListener("loadedmetadata", updateDuration);
-    // Removed unused event listener
 
     const savedTime = localStorage.getItem("videoPlayerCurrentTime");
     if (savedTime) {
@@ -68,7 +65,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     return () => {
       video.removeEventListener("timeupdate", updateProgress);
       video.removeEventListener("loadedmetadata", updateDuration);
-      // Removed unused event listener cleanup
     };
   }, []);
 
@@ -78,7 +74,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = playbackRate; // Actualizamos la velocidad de reproducción
+      videoRef.current.playbackRate = playbackRate;
     }
   }, [playbackRate]);
 
@@ -87,20 +83,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
       const fullScreenElement =
         document.fullscreenElement ||
         (document as Document & { webkitFullscreenElement?: Element })
-          .webkitFullscreenElement; // Safari
+          .webkitFullscreenElement;
       setIsFullScreen(fullScreenElement === videoRef.current);
       setControlsVisible(fullScreenElement === videoRef.current);
     };
 
     document.addEventListener("fullscreenchange", handleFullScreenChange);
-    document.addEventListener("webkitfullscreenchange", handleFullScreenChange); // Safari
+    document.addEventListener("webkitfullscreenchange", handleFullScreenChange);
 
     return () => {
       document.removeEventListener("fullscreenchange", handleFullScreenChange);
-      document.removeEventListener(
-        "webkitfullscreenchange",
-        handleFullScreenChange
-      );
+      document.removeEventListener("webkitfullscreenchange", handleFullScreenChange);
     };
   }, []);
 
@@ -126,14 +119,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   const changeVolume = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
-
-    // Si el video existe, ajustamos el volumen
     if (videoRef.current) {
       videoRef.current.volume = newVolume;
       setVolume(newVolume);
     }
-
-    // Desmuteamos el video si el nuevo volumen es mayor que 0
     if (newVolume > 0 && isMuted) {
       setIsMuted(false);
       if (videoRef.current) videoRef.current.muted = false;
@@ -147,9 +136,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   const handleForward = () => {
     if (!videoRef.current) return;
-    seek(
-      Math.min(videoRef.current.currentTime + 10, videoRef.current.duration)
-    );
+    seek(Math.min(videoRef.current.currentTime + 10, videoRef.current.duration));
   };
 
   const handleRewind = () => {
@@ -159,8 +146,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!videoRef.current || !progressBarRef.current) return;
-    const clickPosition =
-      e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
+    const clickPosition = e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
     const newTime = clickPosition * videoRef.current.duration;
     seek(newTime);
   };
@@ -172,16 +158,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const handleDragEnd = () => {
     setIsDragging(false);
     if (videoRef.current && dragProgress) {
-      videoRef.current.currentTime =
-        (dragProgress / 100) * videoRef.current.duration;
+      videoRef.current.currentTime = (dragProgress / 100) * videoRef.current.duration;
     }
     setDragProgress(null);
   };
 
   const handleDrag = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging || !progressBarRef.current) return;
-    const clickPosition =
-      e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
+    const clickPosition = e.nativeEvent.offsetX / progressBarRef.current.offsetWidth;
     setDragProgress(clickPosition * 100);
   };
 
@@ -190,22 +174,23 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     if (controlsTimeout) {
       clearTimeout(controlsTimeout);
     }
-    // Reiniciamos el temporizador solo si estamos en pantalla completa
-    if (isFullScreen) {
-      setControlsTimeout(setTimeout(() => hideControls(), 3000));
-    }
+
+    const newTimeout = setTimeout(() => {
+      if (!isFullScreen) {
+        setControlsVisible(false);
+      }
+    }, 3000);
+
+    setControlsTimeout(newTimeout);
+
   };
 
   const hideControls = () => {
     if (isFullScreen) {
-      // Solo ocultamos en pantalla completa
       setControlsVisible(false);
     }
-    // Iniciamos un nuevo timeout al intentar ocultar los controles.
-    // Esto asegura que los controles solo se oculten después de 3 segundos sin actividad del ratón
     const newTimeout = setTimeout(() => {
       if (!isFullScreen) {
-        // Solo ocultamos los controles si no estamos en pantalla completa
         setControlsVisible(false);
       }
     }, 3000);
@@ -238,14 +223,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     }
   };
 
-  const handlePlayBackRateChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handlePlayBackRateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setPlaybackRate(parseFloat(e.target.value));
   };
 
   const toggleSpeedSelector = () => {
-    setShowSpeedSelector(!showSpeedSelector); // Alternar la visibilidad del selector de velocidad
+    setShowSpeedSelector(!showSpeedSelector);
   };
 
   return (
@@ -254,13 +237,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
       onMouseMove={showControls}
       onMouseLeave={hideControls}
     >
-      {/* Mostrar thumbnail solo si está en el minuto 0 y está pausado */}
       {currentTime === 0 && !isPlaying && thumbnail && (
         <img
           src={thumbnail}
           alt="Thumbnail"
           className="absolute top-0 left-0 w-full h-full object-cover cursor-pointer"
-          onClick={togglePlayPause} // Play video when thumbnail is clicked
+          onClick={togglePlayPause}
         />
       )}
       <video
@@ -268,13 +250,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
         src={src}
         className="video w-full h-auto block m-auto"
         controls={false}
-        onMouseOver={showControls}
-        onMouseOut={hideControls}
         onTimeUpdate={() => setCurrentTime(videoRef.current?.currentTime ?? 0)}
         onPlaying={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
-       {!isPlaying && (
+      {!isPlaying && (
         <button
           className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-4xl"
           onClick={togglePlayPause}
@@ -284,32 +264,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
       )}
 
       {controlsVisible && (
-        <div
-          className="video-controls absolute bottom-0 left-0 right-0 flex justify-between items-center p-2.5 bg-[rgba(0,0,0,0)] text-white transition-colors ease-in-out hover:bg-[rgba(0,0,0,0.5)]
-        "
-        >
-          <button
-            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
-            onClick={handleRewind}
-          >
+        <div className="video-controls absolute bottom-0 left-0 right-0 flex justify-between items-center p-2.5 bg-[rgba(0,0,0,0)] text-white transition-colors ease-in-out hover:bg-[rgba(0,0,0,0.5)]">
+          <button onClick={handleRewind} className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center">
             <FontAwesomeIcon icon={faBackward} />
           </button>
-          <button
-            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
-            onClick={togglePlayPause}
-          >
+          <button onClick={togglePlayPause} className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center">
             <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
           </button>
-          <button
-            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
-            onClick={handleForward}
-          >
+          <button onClick={handleForward} className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center">
             <FontAwesomeIcon icon={faForward} />
           </button>
-          <button
-            className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center"
-            onClick={toggleMute}
-          >
+          <button onClick={toggleMute} className="bg-transparent border-none text-white p-[5px_10px] cursor-pointer hover:scale-125 w-10 text-center">
             <FontAwesomeIcon icon={isMuted ? faVolumeMute : faVolumeUp} />
           </button>
           <input
@@ -338,15 +303,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
               </div>
             </div>
           </div>
-          <div
-            className="time-display flex items-center space-x-2"
-            style={{ width: "100px" }}
-          >
+          <div className="time-display flex items-center space-x-2" style={{ width: "100px" }}>
             <span className="current-time">{formatTime(currentTime)}</span>
             <span className="duration-time">{formatTime(duration)}</span>
           </div>
           <div className="flex items-center space-x-2">
-            {/* Icono de engranaje para mostrar el selector de velocidad */}
             <button onClick={toggleSpeedSelector} className="relative">
               <FontAwesomeIcon icon={faCog} />
               {showSpeedSelector && (
