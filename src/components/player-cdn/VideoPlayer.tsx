@@ -274,6 +274,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
         onPlaying={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
       />
+       {!isPlaying && (
+        <button
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-4xl"
+          onClick={togglePlayPause}
+        >
+          <FontAwesomeIcon icon={faPlay} />
+        </button>
+      )}
+
       {controlsVisible && (
         <div
           className="video-controls absolute bottom-0 left-0 right-0 flex justify-between items-center p-2.5 bg-[rgba(0,0,0,0)] text-white transition-colors ease-in-out hover:bg-[rgba(0,0,0,0.5)]
