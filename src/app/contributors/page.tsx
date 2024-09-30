@@ -8,6 +8,7 @@ export default function Home() {
       <section className="flex justify-start items-center">
         {data.map((e) => (
           <a
+            key={e.github}
             href={e.github}
             target="_blank"
             className="m-2 px-5 py-4 border border-[#313840] rounded-md flex items-center space-x-5 hover:bg-[#2e333c]"
