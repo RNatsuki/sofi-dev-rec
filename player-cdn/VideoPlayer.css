@@ -1,0 +1,52 @@
+:root {
+  --transparent-used: rgba(0, 0, 0, 0); /* Transparencia para los controles */
+  --transparent-hover: rgba(0, 0, 0, 0.5); /* Transparencia al pasar el mouse */
+}
+
+.progress-bar {
+  flex-grow: 1;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  position: relative;
+  margin: 0 10px;
+}
+
+.progress-bar:hover{
+  height: 15px;
+}
+.progress {
+  height: 100%;
+  background-color: red;
+  width: 0; /* Inicialmente, la barra de progreso está vacía */
+}
+
+.duration-time {
+  color: #ffffff;
+  font-size: 14px;
+  margin-left: 10px;
+}
+
+.time-tooltip {
+  position: absolute;
+  bottom: 100%;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@media (fullscreen) {
+  .video-controls {
+    bottom: 10px; /* Ajuste en modo completo para que se vea bien */
+    background-color: var(
+      --transparent-used
+    ); /* Fondo más oscuro en pantalla completa */
+  }
+
+  .time-tooltip {
+    bottom: 110%; /* Ajuste para que la tooltip esté más arriba en modo completo */
+  }
+}
