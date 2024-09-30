@@ -4,7 +4,9 @@ BFQA
 Desmuteamos
 EIYAXA
 Eshts
+fontawesome
 fontsource
+fortawesome
 hqdefault
 Ibarra
 JAXI
@@ -13,6 +15,7 @@ montserrat
 Nozzly
 oaymw
 remixicon
+rnatsuki
 Sofi
 sofidev
 tailwindcss

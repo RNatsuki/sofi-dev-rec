@@ -11,6 +11,7 @@
   "dependencies": {
     "@fontsource-variable/montserrat": "5.1.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
+    "@rnatsuki/react-video-player": "^0.0.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "next": "14.2.13",
     "react": "18",
