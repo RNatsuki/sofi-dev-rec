@@ -31,9 +31,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(
-    null
-  );
+  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragProgress, setDragProgress] = useState<number | null>(0);
@@ -77,10 +75,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   useEffect(() => {
     const handleFullScreenChange = () => {
-      const fullScreenElement =
-        document.fullscreenElement ||
-        (document as Document & { webkitFullscreenElement?: Element })
-          .webkitFullscreenElement; // Safari
+      const fullScreenElement = document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement; // Safari
       setIsFullScreen(fullScreenElement === videoRef.current);
       setControlsVisible(fullScreenElement === videoRef.current);
     };
@@ -233,7 +228,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   return (
     <div
-      className="fixed w-full max-w-[800px] mx-auto bg-black overflow-hidden left-0 top-0 z-10"
+      className="relative w-full max-w-[800px] mx-auto bg-black overflow-hidden"
       onMouseMove={showControls}
       onMouseLeave={hideControls}
     >
