@@ -56,7 +56,7 @@ export default function Home() {
           onClick={handleModalClick}
         >
           <div className="relative w-full max-w-3xl p-4 bg-transparent rounded-lg">
-            <Player src={idVid} />
+            <Player videoId="1" src={idVid} />
           </div>
         </div>
       )}

@@ -18,11 +18,10 @@ import "./VideoPlayer.css";
 interface VideoPlayerProps {
   src: string;
   thumbnail?: string;
-  width?: number;
-  height?: number;
+  videoId: string; // Agregado para identificar el video
 }
 
-const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
+const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail, videoId }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,6 +44,12 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
     if (!video) return;
 
+    const savedTime = localStorage.getItem(`videoPlayerCurrentTime_${videoId}`);
+    if (savedTime) {
+      video.currentTime = parseFloat(savedTime); // Asigna el tiempo guardado
+      setCurrentTime(video.currentTime); // Asegúrate de actualizar el estado
+    }
+
     const updateProgress = () => {
       const progress = (video.currentTime / video.duration) * 100;
       setProgress(progress);
@@ -58,20 +63,25 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     video.addEventListener("timeupdate", updateProgress);
     video.addEventListener("loadedmetadata", updateDuration);
 
-    const savedTime = localStorage.getItem("videoPlayerCurrentTime");
-    if (savedTime) {
-      video.currentTime = parseFloat(savedTime);
-    }
-
     return () => {
       video.removeEventListener("timeupdate", updateProgress);
       video.removeEventListener("loadedmetadata", updateDuration);
     };
-  }, []);
+  }, [videoId]);
 
   useEffect(() => {
-    localStorage.setItem("videoPlayerCurrentTime", currentTime.toString());
-  }, [currentTime]);
+    const video = videoRef.current;
+
+    if (video) {
+      const interval = setInterval(() => {
+        if (video) {
+          localStorage.setItem(`videoPlayerCurrentTime_${videoId}`, video.currentTime.toString());
+        }
+      }, 1000); // Guardar cada segundo
+
+      return () => clearInterval(interval); // Limpiar el intervalo al desmontar
+    }
+  }, [videoId]);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -185,7 +195,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     }, 3000);
 
     setControlsTimeout(newTimeout);
-
   };
 
   const hideControls = () => {
@@ -238,7 +247,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   return (
     <div
-    className={`relative w-full max-w-[800px] mx-auto bg-black overflow-hidden ${pointerVisible ? 'cursor-default' : 'cursor-none'}`} // Cambiar cursor
+      className={`relative w-full max-w-[800px] mx-auto bg-black overflow-hidden ${pointerVisible ? 'cursor-default' : 'cursor-none'}`}
       onMouseMove={showControls}
       onMouseLeave={hideControls}
     >
