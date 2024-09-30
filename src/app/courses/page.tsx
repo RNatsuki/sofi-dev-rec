@@ -7,14 +7,15 @@ import Player from "@/components/player-cdn/VideoPlayer";
 
 export default function Home() {
   const [modalVid, setModalVid] = useState<boolean>(false);
-  const [idVid, setIdVid] = useState<string>("");
-
+  const [vidUrl, setvidUrl] = useState<string>("");
+  const [vidId, setvidId] = useState<number>(0);
   const ImagesURL = "https://i.ytimg.com/vi/";
 
   // Función para cerrar el modal
   const closeModal = () => {
     setModalVid(false);
-    setIdVid("");
+    setvidUrl("");
+    setvidId(0);
   };
 
   // Función para manejar el cierre al hacer clic fuera del modal
@@ -38,7 +39,8 @@ export default function Home() {
               <span
                 className="w-[50px] h-[50px] border-[3px] border-white rounded-full cursor-pointer flex justify-center items-center"
                 onClick={() => {
-                  setIdVid(e.id_video);
+                  setvidUrl(e.id_video);
+                  setvidId(e.id);
                   setModalVid(true);
                 }}
               >
@@ -56,7 +58,7 @@ export default function Home() {
           onClick={handleModalClick}
         >
           <div className="relative w-full max-w-3xl p-4 bg-transparent rounded-lg">
-            <Player videoId="1" src={idVid} />
+            <Player videoId={vidId} src={vidUrl} />
           </div>
         </div>
       )}
