@@ -11,6 +11,7 @@ import {
   faVolumeMute,
   faExpand,
   faCompress,
+  faCog,
 } from "@fortawesome/free-solid-svg-icons";
 import "./VideoPlayer.css"; // Asegúrate de tener este archivo CSS para estilos
 
@@ -31,12 +32,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
   const [controlsVisible, setControlsVisible] = useState(true);
-  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragProgress, setDragProgress] = useState<number | null>(0);
-  // Añadido para controlar si el video ha comenzado
-  // Removed unused state variable
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [showSpeedSelector, setShowSpeedSelector] = useState(false); // Estado para mostrar el selector de velocidad
 
   useEffect(() => {
     const video = videoRef.current;
@@ -74,8 +77,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   }, [currentTime]);
 
   useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = playbackRate; // Actualizamos la velocidad de reproducción
+    }
+  }, [playbackRate]);
+
+  useEffect(() => {
     const handleFullScreenChange = () => {
-      const fullScreenElement = document.fullscreenElement || (document as Document & { webkitFullscreenElement?: Element }).webkitFullscreenElement; // Safari
+      const fullScreenElement =
+        document.fullscreenElement ||
+        (document as Document & { webkitFullscreenElement?: Element })
+          .webkitFullscreenElement; // Safari
       setIsFullScreen(fullScreenElement === videoRef.current);
       setControlsVisible(fullScreenElement === videoRef.current);
     };
@@ -226,6 +238,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     }
   };
 
+  const handlePlayBackRateChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setPlaybackRate(parseFloat(e.target.value));
+  };
+
+  const toggleSpeedSelector = () => {
+    setShowSpeedSelector(!showSpeedSelector); // Alternar la visibilidad del selector de velocidad
+  };
+
   return (
     <div
       className="relative w-full max-w-[800px] mx-auto bg-black overflow-hidden"
@@ -314,9 +336,29 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
             <span className="current-time">{formatTime(currentTime)}</span>
             <span className="duration-time">{formatTime(duration)}</span>
           </div>
-          <button onClick={toggleFullScreen}>
-            <FontAwesomeIcon icon={isFullScreen ? faCompress : faExpand} />
-          </button>
+          <div className="flex items-center space-x-2">
+            {/* Icono de engranaje para mostrar el selector de velocidad */}
+            <button onClick={toggleSpeedSelector} className="relative">
+              <FontAwesomeIcon icon={faCog} />
+              {showSpeedSelector && (
+                <div className="absolute bg-gray-800 text-white p-2 rounded-lg right-0 top-[-150%] z-10 shadow-lg">
+                  <select
+                    value={playbackRate}
+                    onChange={handlePlayBackRateChange}
+                    className="bg-gray-700 text-white p-1 rounded"
+                  >
+                    <option value="0.5">0.5x</option>
+                    <option value="1">1x (Normal)</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="2">2x</option>
+                  </select>
+                </div>
+              )}
+            </button>
+            <button onClick={toggleFullScreen}>
+              <FontAwesomeIcon icon={isFullScreen ? faCompress : faExpand} />
+            </button>
+          </div>
         </div>
       )}
     </div>
