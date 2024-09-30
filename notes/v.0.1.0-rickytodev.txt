@@ -1,0 +1,3 @@
+Se cambiaron algunos elementos para que la interfaz se mas amigable con los usuarios.
+Se cambiaron los iconos por RemixIcon que para mi son los mejores y mas bonitos.
+Se cambio el método de reproducción de video, para que sirva con el link que se le pasa en vez de andar subiendo todo el link del video.
