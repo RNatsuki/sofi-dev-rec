@@ -1,10 +1,12 @@
 [
   {
+    "id": 1,
     "id_image": "Aikuakl3i8A/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLBUoxzEEshts7Z1I933PQOt_vzwnQ",
-    "id_video": "https://pub-403c0d295eb047658388f484e5c9a245.r2.dev/%F0%9F%92%9BCurso%20de%20desarrollo%20frontend%20desde%20cero.mp4"
+    "url_video": "https://pub-403c0d295eb047658388f484e5c9a245.r2.dev/%F0%9F%92%9BCurso%20de%20desarrollo%20frontend%20desde%20cero.mp4"
   },
   {
+    "id": 2,
     "id_image": "uZeXFBuf03w/hqdefault.jpg?sqp=-oaymwEbCKgBEF5IVfKriqkDDggBFQAAiEIYAXABwAEG&rs=AOn4CLDxAXY3o4ZsxEESb_SVpLQTmvTroQ",
-    "id_video": "uZeXFBuf03w"
+    "url_video": "uZeXFBuf03w"
   }
 ]

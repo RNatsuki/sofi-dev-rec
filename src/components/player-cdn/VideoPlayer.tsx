@@ -18,7 +18,7 @@ import "./VideoPlayer.css";
 interface VideoPlayerProps {
   src: string;
   thumbnail?: string;
-  videoId: string; // Agregado para identificar el video
+  videoId: number; // Agregado para identificar el video
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail, videoId }) => {
