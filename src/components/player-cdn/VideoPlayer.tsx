@@ -38,6 +38,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
   const [dragProgress, setDragProgress] = useState<number | null>(0);
   const [playbackRate, setPlaybackRate] = useState(1);
   const [showSpeedSelector, setShowSpeedSelector] = useState(false);
+  const [pointerVisible, setPointerVisible] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -171,11 +172,13 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   const showControls = () => {
     setControlsVisible(true);
+    setPointerVisible(true); // Mostrar puntero
     if (controlsTimeout) {
       clearTimeout(controlsTimeout);
     }
 
     const newTimeout = setTimeout(() => {
+      setPointerVisible(false); // Ocultar puntero
       if (!isFullScreen) {
         setControlsVisible(false);
       }
@@ -189,7 +192,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
     if (isFullScreen) {
       setControlsVisible(false);
     }
+
     const newTimeout = setTimeout(() => {
+      setPointerVisible(false); // Ocultar puntero
       if (!isFullScreen) {
         setControlsVisible(false);
       }
@@ -233,7 +238,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ src, thumbnail }) => {
 
   return (
     <div
-      className="relative w-full max-w-[800px] mx-auto bg-black overflow-hidden"
+    className={`relative w-full max-w-[800px] mx-auto bg-black overflow-hidden ${pointerVisible ? 'cursor-default' : 'cursor-none'}`} // Cambiar cursor
       onMouseMove={showControls}
       onMouseLeave={hideControls}
     >
